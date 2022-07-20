@@ -1,11 +1,26 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 import { hasRoles } from 'src/auth/decorator/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-guard';
 import { RolesGuard } from 'src/auth/guard/role.guard';
 import { User, UserRole } from '../models/user.interface';
 import { UserService } from '../service/user.service';
+import { diskStorage } from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import { join, parse } from 'path';
+
+export const storage = {
+    storage: diskStorage({
+        destination: './uploads/profileimages',
+        filename: (req, file, cb) => {
+            const filename: string = parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+            const extension: string = parse(file.originalname).ext;
+            cb(null, `${filename}${extension}`)
+        }
+    })
+}
 
 @Controller('users')
 export class UserController {
@@ -87,6 +102,22 @@ export class UserController {
         @Body() user: User
     ): Observable<User> {
         return this.userService.updateRoleOfUser(Number(id), user);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('upload')
+    @UseInterceptors(FileInterceptor('file', storage))
+    uploadFile( @UploadedFile() file, @Request() req ): Observable<Object> {
+        const user: User = req.user.user;
+        return this.userService.updateOne(user.id, {profileImage: file.filename}).pipe(
+            tap((user: User) => console.log(user)),
+            map((user: User) => ({profileImage: user.profileImage}))
+        ); 
+    }
+
+    @Get('profile-image/:imagename')
+    findProfileImage(@Param('imagename') imagename, @Res() res): Observable<object> {
+        return of(res.sendFile(join(process.cwd(), 'uploads/profileimages/' + imagename)))
     }
 
 }
