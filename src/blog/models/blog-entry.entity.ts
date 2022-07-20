@@ -1,5 +1,5 @@
 import { UserEntity } from "src/user/models/user.entity";
-import { BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class BlogEntryEntity {
@@ -32,15 +32,15 @@ export class BlogEntryEntity {
     @Column({default: 0})
     likes: number;
 
-    @Column()
-    headerImage: string;
-
-    @Column()
-    publishedDate: Date;
-
-    @Column()
-    isPublished: boolean;
-
     @ManyToOne(type => UserEntity, user => user.blogEntries)
     author: UserEntity;
+
+    @Column({nullable: true})
+    headerImage: string;
+
+    @Column({nullable: true})
+    publishedDate: Date;
+
+    @Column({nullable: true})
+    isPublished: boolean;
 }
