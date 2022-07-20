@@ -10,6 +10,7 @@ import { UserService } from '../service/user.service';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { join, parse } from 'path';
+import { UserIsUserGuard } from 'src/auth/guard/UserIsUser.guard';
 
 export const storage = {
     storage: diskStorage({
@@ -87,6 +88,7 @@ export class UserController {
         );
     }
 
+    @UseGuards(JwtAuthGuard, UserIsUserGuard)
     @Put(":id")
     UpdateOne( @Param("id")id: string, @Body()user: User ) {
         return this.userService.updateOne(
