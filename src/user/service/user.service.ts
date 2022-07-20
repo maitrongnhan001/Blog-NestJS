@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { catchError, from, map, Observable, switchMap, throwError } from 'rxjs';
 import { AuthService } from 'src/auth/service/auth.service';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { UserEntity } from '../models/user.entity';
 import { User, UserRole } from '../models/user.interface';
 
@@ -70,6 +70,42 @@ export class UserService {
             })
         )
     } 
+
+    paginateFilterByUsername(option: IPaginationOptions, user: User): Observable<Pagination<User>> {
+        const page = Number(option.page);
+        const limit = Number(option.limit);
+        
+        return from( this.userRepository.findAndCount({
+            skip: (page - 1) * limit || 0,
+            take: limit || 10,
+            order: {id: "ASC"},
+            select: ['id', 'name', 'username', 'email', 'role'],
+            where: [
+                {username: Like(`%${user.username}%`)}
+            ]
+        }) ).pipe(
+            map(([users, totalUsers]) => {
+                const usersPageable: Pagination<User> = {
+                    items: users,
+                    links: {
+                        first: option.route + `?limit=${limit}`,
+                        previous: option.route + ``,
+                        next: option.route + `?limit=${option.limit}&page=${page + 1}`,
+                        last: option.route + `?limit=${option.limit}&page=${ Math.ceil(totalUsers / limit)}`,
+                    },
+                    meta: {
+                        currentPage: page,
+                        itemCount: users.length,
+                        itemsPerPage: limit,
+                        totalItems: totalUsers,
+                        totalPages: Math.ceil(totalUsers / limit)
+                    }
+                }; 
+
+                return usersPageable;
+            })
+        )
+    }
 
     deleteOne( id: number ): Observable<any> {
         return from( this.userRepository.delete(id) )
