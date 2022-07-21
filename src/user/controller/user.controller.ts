@@ -80,7 +80,8 @@ export class UserController {
             });
         }
     }
-
+    @hasRoles(UserRole.ADMIN)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Delete(":id")
     deleteOne( @Param("id")id: string ): Observable<any> {
         return this.userService.deleteOne(
@@ -88,6 +89,7 @@ export class UserController {
         );
     }
 
+    @hasRoles(UserRole.ADMIN)
     @UseGuards(JwtAuthGuard, UserIsUserGuard)
     @Put(":id")
     UpdateOne( @Param("id")id: string, @Body()user: User ) {

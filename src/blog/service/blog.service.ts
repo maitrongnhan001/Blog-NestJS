@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { from, Observable, of, switchMap } from 'rxjs';
+import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
+import { from, map, Observable, of, retry, switchMap } from 'rxjs';
+import { where } from 'sequelize/types';
 import { User } from 'src/user/models/user.interface';
 import { UserService } from 'src/user/service/user.service';
 import { Repository } from 'typeorm';
@@ -36,6 +38,33 @@ export class BlogService {
         }));
     }
 
+    paginateAll(options: IPaginationOptions): Observable<Pagination<BlogEntry>> {
+        return from(paginate<any>(
+            this.blogRepository, 
+            options, 
+            { relations: ['author'] }
+        )).pipe(
+            map((blogEntries: Pagination<BlogEntry>) => {
+                return blogEntries;
+            })
+        );
+    }
+
+    paginateByUser(options: IPaginationOptions, id: number): Observable<Pagination<BlogEntry>> {
+        return from(
+            paginate<any>(
+                this.blogRepository,
+                options,
+                {
+                    relations: ['author'],
+                    where: { author: {id: id} }
+                }
+            )
+        ).pipe(
+            map(blogEntries => blogEntries)
+        )
+    }
+
     findByUser(userId: number): Observable<BlogEntry[]> {
         return from(this.blogRepository.find({
                 where: {
@@ -53,5 +82,19 @@ export class BlogService {
                 relations: ['author']
             })
         );
+    }
+
+    updateOne(id: number, blog: BlogEntry): Observable<BlogEntry> {
+        return from(this.blogRepository.update(id, blog)).pipe(
+            switchMap(() => {
+                return this.blogRepository.findOne({
+                    where: {id: id}
+                })
+            })
+        )
+    }
+
+    deleteOne(id: number): Observable<any> {
+        return from(this.blogRepository.delete(id));
     }
 }
