@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
-import { from, map, Observable, of, retry, switchMap } from 'rxjs';
-import { where } from 'sequelize/types';
+import { from, map, Observable, of, switchMap } from 'rxjs';
 import { User } from 'src/user/models/user.interface';
 import { UserService } from 'src/user/service/user.service';
 import { Repository } from 'typeorm';

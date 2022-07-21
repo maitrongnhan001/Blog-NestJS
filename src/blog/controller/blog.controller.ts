@@ -1,10 +1,27 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, UseGuards } from '@nestjs/common';
-import { Observable } from 'rxjs';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Observable, of } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-guard';
+import { fileURLToPath } from 'url';
 import { UserIsAuthorGuard } from '../guards/user-is-author.guards';
 import { BlogEntry } from '../models/blog-entry.interface';
 import { BlogService } from '../service/blog.service';
+import { diskStorage } from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import { join, parse } from 'path';
+import { Image } from '../models/Image.interface';
 const ControllerURL = 'http://localhost:3000/api/blogs';
+
+export const storage = {
+    storage: diskStorage({
+        destination: './uploads/blog-entry-images',
+        filename: (req, file, cb) => {
+            const filename: string = parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+            const extension: string = parse(file.originalname).ext;
+            cb(null, `${filename}${extension}`)
+        }
+    })
+}
 
 @Controller('blogs')
 export class BlogController {
@@ -19,15 +36,6 @@ export class BlogController {
         const user = req.user;
         return this.blogService.create(user, blogEntry);
     }
-
-    // @Get()
-    // findBlogEntries(@Query('userId') userId: number): Observable<BlogEntry[]> {
-    //     if (!userId) {
-    //         return this.blogService.findAll();
-    //     } else {
-    //         return this.blogService.findByUser(Number(userId));
-    //     }
-    // }
 
     @Get()
     index(
@@ -74,5 +82,17 @@ export class BlogController {
     @Delete(":id")
     deleteOne(@Param("id") id: number): Observable<any> {
         return this.deleteOne(id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('image/upload')
+    @UseInterceptors(FileInterceptor('file', storage))
+    uploadFile(@UploadedFile() file, @Request() req): Observable<Image> {
+        return of(file);
+    }
+
+    @Get('image/:imagename')
+    findImage(@Param('imagename') imagename, @Res() res): Observable<object> {
+        return of(res.sendFile(join(process.cwd(), 'uploads/blog-entry-images/' + imagename)))
     }
 }

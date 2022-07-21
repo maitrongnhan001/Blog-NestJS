@@ -1,5 +1,5 @@
 import { UserEntity } from "src/user/models/user.entity";
-import { BeforeUpdate, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class BlogEntryEntity {
