@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { BlogModule } from './blog/blog.module';
 import { BlogLikesModule } from './blog-likes/blog-likes.module';
 import { CommentsModule } from './comments/comments.module';
+import { CommentLikesModule } from './comment-likes/comment-likes.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { CommentsModule } from './comments/comments.module';
     AuthModule,
     BlogModule,
     BlogLikesModule,
-    CommentsModule
+    CommentsModule,
+    CommentLikesModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -32,6 +32,15 @@ export class CommentsService {
         );
     }
 
+    findOne(id: number): Observable<Comments> {
+        return from(this.commentsRepository.findOne(
+            {
+                where: {id: id},
+                relations: ['author', 'blog']
+            }
+        ));
+    }
+
     getByBlog(id: number, options: IPaginationOptions):Observable<Pagination<Comments>> {
         return from(paginate<any>(
             this.commentsRepository,

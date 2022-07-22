@@ -1,4 +1,5 @@
 import { BlogEntryEntity } from "src/blog/models/blog-entry.entity";
+import { CommentLikesEntity } from "src/comment-likes/models/commentLikes.entity";
 import { UserEntity } from "src/user/models/user.entity";
 import { BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -28,6 +29,12 @@ export class CommentsEntity {
         blogEntryEntity => blogEntryEntity.id
     )
     blog: BlogEntryEntity;
+
+    @OneToMany(
+        type => CommentLikesEntity,
+        commentLikesEntity => commentLikesEntity.id
+    )
+    commentLikes: CommentLikesEntity[];
 
     @Column({nullable: true})
     replied: number;

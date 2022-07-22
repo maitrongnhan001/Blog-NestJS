@@ -1,5 +1,6 @@
 import { BlogLikes } from "src/blog-likes/models/blogLikes.interface";
 import { BlogEntry } from "src/blog/models/blog-entry.interface";
+import { CommentLikes } from "src/comment-likes/models/commentLikes.interface";
 import { Comments } from "src/comments/models/comments.interface";
 
 export enum UserRole {
@@ -20,4 +21,5 @@ export interface User {
     blogEntries?: BlogEntry[];
     blogLikes?: BlogLikes[];
     blogComments?: Comments[];
+    commentLikes?: CommentLikes[];
 }

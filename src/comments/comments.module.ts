@@ -13,6 +13,7 @@ import { BlogModule } from 'src/blog/blog.module';
     BlogModule
   ],
   providers: [CommentsService],
-  controllers: [CommentsController]
+  controllers: [CommentsController],
+  exports: [CommentsService]
 })
 export class CommentsModule {}
