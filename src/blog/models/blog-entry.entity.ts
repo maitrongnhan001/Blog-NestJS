@@ -1,4 +1,5 @@
 import { BlogLikesEntity } from "src/blog-likes/models/blogLikes.entity";
+import { CommentsEntity } from "src/comments/models/comments.entity";
 import { UserEntity } from "src/user/models/user.entity";
 import { BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -33,6 +34,9 @@ export class BlogEntryEntity {
     @Column({default: 0})
     likes: number;
 
+    @Column({default: 0})
+    comments: number;
+
     @ManyToOne(type => UserEntity, user => user.blogEntries)
     author: UserEntity;
 
@@ -49,5 +53,11 @@ export class BlogEntryEntity {
         type => BlogLikesEntity,
         blogLikeEntity => blogLikeEntity.id
     )
-    blogLikes: BlogLikesEntity[]
+    blogLikes: BlogLikesEntity[];
+
+    @OneToMany(
+        type => CommentsEntity,
+        commentsEntity => commentsEntity.id
+    )
+    blogComments: CommentsEntity[];
 }
