@@ -1,5 +1,6 @@
+import { BlogLikesEntity } from "src/blog-likes/models/blogLikes.entity";
 import { BlogEntryEntity } from "src/blog/models/blog-entry.entity";
-import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserRole } from "./user.interface";
 
 @Entity()
@@ -28,6 +29,12 @@ export class UserEntity {
 
     @OneToMany(type => BlogEntryEntity, blogEntryEntity => blogEntryEntity.author)
     blogEntries: BlogEntryEntity[];
+
+    @OneToMany(
+        type => BlogLikesEntity,
+        blogLikeEntity => blogLikeEntity.id
+    )
+    blogLikes: BlogLikesEntity[]
 
     @BeforeInsert()
     emailToLowerCase() {

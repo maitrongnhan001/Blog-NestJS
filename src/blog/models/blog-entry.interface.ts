@@ -1,3 +1,4 @@
+import { BlogLikes } from "src/blog-likes/models/blogLikes.interface";
 import { User } from "src/user/models/user.interface";
 
 export interface BlogEntry {
@@ -13,4 +14,5 @@ export interface BlogEntry {
     headerImage?: string;
     publishedDate?: Date;
     isPublished?: boolean;
+    blogLikes?: BlogLikes[];
 }

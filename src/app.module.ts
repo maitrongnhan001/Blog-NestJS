@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { BlogModule } from './blog/blog.module';
+import { BlogLikesModule } from './blog-likes/blog-likes.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { BlogModule } from './blog/blog.module';
     }),
     UserModule,
     AuthModule,
-    BlogModule
+    BlogModule,
+    BlogLikesModule
   ],
   controllers: [AppController],
   providers: [AppService],

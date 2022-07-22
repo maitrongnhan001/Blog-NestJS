@@ -5,6 +5,7 @@ import { UserModule } from 'src/user/user.module';
 import { BlogEntryEntity } from './models/blog-entry.entity';
 import { BlogController } from './controller/blog.controller';
 import { BlogService } from './service/blog.service';
+import { BlogLikesModule } from 'src/blog-likes/blog-likes.module';
 
 @Module({
     imports: [
@@ -13,7 +14,8 @@ import { BlogService } from './service/blog.service';
         UserModule
     ],
     controllers: [BlogController],
-    providers: [BlogService]
+    providers: [BlogService],
+    exports: [BlogService]
 })
 export class BlogModule {}
  

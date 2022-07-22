@@ -1,5 +1,6 @@
+import { BlogLikesEntity } from "src/blog-likes/models/blogLikes.entity";
 import { UserEntity } from "src/user/models/user.entity";
-import { BeforeUpdate, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeUpdate, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class BlogEntryEntity {
@@ -43,4 +44,10 @@ export class BlogEntryEntity {
 
     @Column({nullable: true})
     isPublished: boolean;
+
+    @OneToMany(
+        type => BlogLikesEntity,
+        blogLikeEntity => blogLikeEntity.id
+    )
+    blogLikes: BlogLikesEntity[]
 }

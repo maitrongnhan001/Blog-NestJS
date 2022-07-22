@@ -1,8 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, Request, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Observable, of } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-guard';
-import { fileURLToPath } from 'url';
 import { UserIsAuthorGuard } from '../guards/user-is-author.guards';
 import { BlogEntry } from '../models/blog-entry.interface';
 import { BlogService } from '../service/blog.service';
