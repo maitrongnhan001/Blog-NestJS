@@ -11,6 +11,7 @@ import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { join, parse } from 'path';
 import { UserIsUserGuard } from 'src/auth/guard/UserIsUser.guard';
+const ControllerURL = process.env.APP_URL;
 
 export const storage = {
     storage: diskStorage({
@@ -68,7 +69,7 @@ export class UserController {
                 {
                     page: Number(page),
                     limit: Number(limit),
-                    route: "http://localhost:3000/api/users"
+                    route: `${ControllerURL}/users`
                 },
                 {username}
             )
@@ -76,7 +77,7 @@ export class UserController {
             return this.userService.paginate({
                 page, 
                 limit,
-                route: 'http://localhost:3000/users' 
+                route: `${ControllerURL}/users`
             });
         }
     }

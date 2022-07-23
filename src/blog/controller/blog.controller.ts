@@ -9,7 +9,7 @@ import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { join, parse } from 'path';
 import { Image } from '../models/Image.interface';
-const ControllerURL = 'http://localhost:3000/api/blogs';
+const ControllerURL = process.env.APP_URL;
 
 export const storage = {
     storage: diskStorage({
@@ -46,7 +46,7 @@ export class BlogController {
         return this.blogService.paginateAll({
             page: page,
             limit: limit,
-            route: ControllerURL
+            route: `${ControllerURL}/blogs`
         });
     }
 
@@ -61,7 +61,7 @@ export class BlogController {
         return this.blogService.paginateByUser({
             page: page,
             limit: limit,
-            route: ControllerURL
+            route: `${ControllerURL}/blogs`
         }, id);
     }
 
